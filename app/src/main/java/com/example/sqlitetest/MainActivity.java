@@ -31,60 +31,50 @@ public class MainActivity extends AppCompatActivity {
         Button btnInsert = findViewById(R.id.btnInsert);
         Button btnSelect = findViewById(R.id.btnSelect);
 
-
         myDBHelper = new MyDBHelper(this);
 
-        btnInit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sqlDB = myDBHelper.getWritableDatabase();
-                myDBHelper.onUpgrade(sqlDB, 1, 2);
-                sqlDB.close();
-            }
+        btnInit.setOnClickListener(v -> {
+            sqlDB = myDBHelper.getWritableDatabase();
+            myDBHelper.onUpgrade(sqlDB, 1, 2);
+            sqlDB.close();
         });
 
-        btnInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText edtName = findViewById(R.id.edtName);
-                EditText edtNumber = findViewById(R.id.edtNumber);
+        btnInsert.setOnClickListener(v -> {
+            EditText edtName = findViewById(R.id.edtName);
+            EditText edtNumber = findViewById(R.id.edtNumber);
 
-                String strName = edtName.getText().toString();
-                String strNumber = edtNumber.getText().toString();
+            String strName = edtName.getText().toString();
+            String strNumber = edtNumber.getText().toString();
 
-                sqlDB = myDBHelper.getWritableDatabase();
-                sqlDB.execSQL("INSERT INTO groupTBL VALUES('" + strName + "', '" + strNumber + "')");
-                sqlDB.close();
+            sqlDB = myDBHelper.getWritableDatabase();
+            sqlDB.execSQL("INSERT INTO groupTBL VALUES('" + strName + "', '" + strNumber + "')");
+            sqlDB.close();
 
-                Toast.makeText(getApplicationContext(), "저장완료", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(), "저장완료", Toast.LENGTH_SHORT).show();
         });
 
-        btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String strNames = "목록 리스트\r\n\r\n";
-                String strNumbers = "수량\r\n\r\n";
+        btnSelect.setOnClickListener(v -> {
+            String strNames = "목록 리스트\r\n\r\n";
+            String strNumbers = "수량\r\n\r\n";
 
-                sqlDB = myDBHelper.getWritableDatabase();
-                Cursor cursor = sqlDB.rawQuery("SELECT * FROM groupTBL;", null);
+            sqlDB = myDBHelper.getWritableDatabase();
+            Cursor cursor = sqlDB.rawQuery("SELECT * FROM groupTBL;", null);
 
-                while(cursor.moveToNext()) {
-                    strNames += cursor.getString(0) + "\r\n";
-                    strNumbers+= cursor.getString(1) + "\r\n";
-                }
-                cursor.close();
-                sqlDB.close();
-
-                EditText edtNameResult = findViewById(R.id.edtNameResult);
-                EditText edtNumberResult = findViewById(R.id.edtNumberResult);
-                edtNameResult.setText(strNames);
-                edtNumberResult.setText(strNumbers);
+            while(cursor.moveToNext()) {
+                strNames += cursor.getString(0) + "\r\n";
+                strNumbers+= cursor.getString(1) + "\r\n";
             }
+            cursor.close();
+            sqlDB.close();
+
+            EditText edtNameResult = findViewById(R.id.edtNameResult);
+            EditText edtNumberResult = findViewById(R.id.edtNumberResult);
+            edtNameResult.setText(strNames);
+            edtNumberResult.setText(strNumbers);
         });
 
         Spinner spinner = findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
